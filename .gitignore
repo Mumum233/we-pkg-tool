@@ -1,0 +1,15 @@
+# extracted output
+output/
+images/
+out/
+*.png
+*.jpg
+*.jpeg
+
+# never commit extracted wallpaper textures
+*.tex
+*.pkg
+
+node_modules/
+.DS_Store
+Thumbs.db
