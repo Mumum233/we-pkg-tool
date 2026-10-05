@@ -74,7 +74,58 @@ echo ==========================================================
 if exist "%ARG%\" goto ISDIR
 if /i "%EXT%"==".tex" goto ISTEX
 if /i "%EXT%"==".pkg" goto ISPKG
-echo   [skip] unsupported file type
+if /i "%EXT%"==".mp4" goto ISVIDEO
+if /i "%EXT%"==".webm" goto ISVIDEO
+if /i "%EXT%"==".avi" goto ISVIDEO
+if /i "%EXT%"==".mkv" goto ISVIDEO
+if /i "%EXT%"==".mov" goto ISVIDEO
+if /i "%EXT%"==".gif" goto ISVIDEO
+if /i "%EXT%"==".jpg" goto ISIMAGE
+if /i "%EXT%"==".jpeg" goto ISIMAGE
+if /i "%EXT%"==".png" goto ISIMAGE
+if /i "%EXT%"==".bmp" goto ISIMAGE
+echo   [skip] this file type is not handled by this tool:
+echo          %EXT%
+echo.
+echo   This tool only reads .pkg and .tex files.
+echo   Those are what a SCENE type wallpaper contains.
+goto NEXT
+
+rem ---------------------------------------------------------------
+rem A video wallpaper holds a plain MP4, not a package. No extraction
+rem needed - but Wallpaper Engine also ships a preview.jpg next to it
+rem that is ready to use as a still picture.
+rem ---------------------------------------------------------------
+:ISVIDEO
+echo   This is a VIDEO wallpaper, not a scene package.
+echo   There is no .pkg to unpack - the wallpaper itself is just:
+echo          %NAME%%EXT%
+echo.
+if exist "%ARG%\..\preview.jpg" (
+  echo   Good news: this wallpaper folder also contains a ready-made
+  echo   still picture you can use as-is:
+  echo          %~dp1preview.jpg
+  echo.
+  echo   Opening its folder for you now.
+  explorer "%~dp1"
+) else (
+  echo   To grab a frame from the video yourself, use ffmpeg:
+  echo          ffmpeg -i "%ARG%" -vframes 1 out.jpg
+)
+goto NEXT
+
+rem ---------------------------------------------------------------
+rem Already an image. A web-type wallpaper keeps its pictures loose in
+rem a folder like this, so there is nothing to extract.
+rem ---------------------------------------------------------------
+:ISIMAGE
+echo   This is already a normal image file - nothing to extract.
+echo.
+echo   Wallpapers of the "web" or "application" type keep their
+echo   pictures loose in folders like this one, so they open directly.
+echo.
+echo   Opening its folder for you now.
+explorer "%~dp1"
 goto NEXT
 
 rem ---------------------------------------------------------------
